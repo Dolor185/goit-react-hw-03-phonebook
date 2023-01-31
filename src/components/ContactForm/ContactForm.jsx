@@ -17,10 +17,13 @@ export class ContactForm extends Component {
   onSubmit = e => {
     e.preventDefault();
     this.props.formSubmit(this.state);
-    this.setState({
-      name: '',
-      number: '',
-    });
+
+    if (!this.props.contactСomparison(this.state.name)) {
+      this.setState({
+        name: '',
+        number: '',
+      });
+    }
   };
 
   render() {
@@ -58,4 +61,5 @@ export class ContactForm extends Component {
 
 ContactForm.propTypes = {
   formSubmit: PropTypes.func.isRequired,
+  contactСomparison: PropTypes.func.isRequired,
 };

@@ -16,42 +16,40 @@ export class App extends Component {
 
     filter: '',
   };
-  componentDidMount() {
-    const items = localStorage.getItem('contacts');
-
-    if (items) {
-      this.setState({ contacts: JSON.parse(items) });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.contacts !== this.state.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
 
   formSubmit = ({ name, number }) => {
     const contact = {
-      id: nanoid(),
       name,
       number,
+      id: nanoid(),
     };
 
-    const checkName = this.state.contacts.find(contact =>
-      contact.name.toLowerCase().includes(name.toLowerCase())
-    );
-
-    checkName
+    this.contactСomparison(name)
       ? alert(`${name} is already in contacts`)
       : this.setState(({ contacts }) => ({
           contacts: [contact, ...contacts],
         }));
   };
 
+  contactСomparison = name => {
+    return this.state.contacts.find(contact =>
+      contact.name.toLowerCase().includes(name.toLowerCase())
+    );
+  };
+
   filterChange = e => {
     this.setState({
       filter: e.currentTarget.value,
     });
+  };
+
+  filterContacts = () => {
+    const { filter, contacts } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
   };
 
   onDelete = id => {
@@ -67,11 +65,13 @@ export class App extends Component {
     return (
       <Container>
         <h1>Phonebook</h1>
-        <ContactForm formSubmit={this.formSubmit} />
+        <ContactForm
+          formSubmit={this.formSubmit}
+          contactСomparison={this.contactСomparison}
+        />
         <Filter filter={this.state.filter} findContact={this.filterChange} />
         <ContactList
-          contacts={this.state.contacts}
-          filter={this.state.filter}
+          contacts={this.filterContacts()}
           onDelete={this.onDelete}
         />
       </Container>

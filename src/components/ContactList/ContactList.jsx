@@ -1,42 +1,19 @@
-import { List, Item, Button } from './ContactList.styled';
+import { List } from './ContactList.styled';
 import PropTypes from 'prop-types';
+import { ContactListItem } from 'components/ContactListItem/ContactListItem';
 
-export const ContactList = ({ contacts, filter, onDelete }) => {
-  const filteredList = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
-
-  return filteredList ? (
+export const ContactList = ({ contacts, onDelete }) => {
+  return (
     <List>
-      {filteredList.map(({ name, number, id }) => {
+      {contacts.map(({ id, name, number }) => {
         return (
-          <Item key={id}>
-            {name}: {number}
-            <Button
-              onClick={() => {
-                onDelete(id);
-              }}
-            >
-              Delete
-            </Button>
-          </Item>
-        );
-      })}
-    </List>
-  ) : (
-    <List>
-      {contacts.map(({ name, number, id }) => {
-        return (
-          <Item key={id}>
-            {name}: {number}
-            <Button
-              onClick={() => {
-                onDelete(id);
-              }}
-            >
-              Delete
-            </Button>
-          </Item>
+          <ContactListItem
+            key={id}
+            name={name}
+            number={number}
+            id={id}
+            onDelete={onDelete}
+          />
         );
       })}
     </List>
@@ -51,4 +28,5 @@ ContactList.propTypes = {
       number: PropTypes.string.isRequired,
     }).isRequired
   ).isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
